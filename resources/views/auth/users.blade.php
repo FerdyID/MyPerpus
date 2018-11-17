@@ -1,72 +1,79 @@
 @extends('layouts.layout')
+@section('styles')
+    <link href="{{asset('css/datatables.bootstrap.css')}}" rel="stylesheet"/>
+@endsection
+
 @section('content')
     <div class="page-content">
-        <div class="col-lg-2">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{url('/')}}"><i class="fa fa-home font-20"></i></a>
+            </li>
+            <li class="breadcrumb-item">Users</li>
+        </ol>
+        
+        <div style="margin-bottom: 20px;">
             <a href="{{ route('user.create') }}" class="btn btn-primary btn-rounded btn-fw"><i class="fa fa-plus"></i>
                 Tambah User</a>
         </div>
         
-        <div class="col-lg-12">
-            @if (Session::has('message'))
-                <div class="alert alert-{{ Session::get('message_type') }}" id="waktu2"
-                     style="margin-top:10px;">{{ Session::get('message') }}</div>
-            @endif
-        </div>
+        @if (Session::has('message'))
+            <div class="alert alert-{{ Session::get('message_type') }} alert-bordered">{{ Session::get('message') }}</div>
+        @endif
         
-        <div class="col-lg-12 grid-margin" style="margin-top: 20px;">
-            <div class="ibox">
-                <div class="ibox-head">
-                    <div class="ibox-title text-info"><i class="fa fa-user"></i> Data Users</div>
-                    
-                    
-                    <div class="btn-group">
-                        <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><i
-                                    class="fa fa-download"></i> Export As <i class="fa fa-angle-down"></i></button>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a class="dropdown-item" href="{{ url('/downloadPDF') }}"><i
-                                            class="fa fa-file-pdf-o"></i> PDF</a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="{{ url('/downloadExcel') }}"><i
-                                            class="fa fa-file-excel-o"></i> Excel</a>
-                            </li>
-                        </ul>
-                    </div>
+        <div class="card ibox">
+            <div class="ibox-head">
+                <div class="ibox-title text-info"><i class="fa fa-user"></i> Data Users</div>
+                <div class="pull-rightt">
+                    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><i
+                                class="fa fa-download"></i> Export As <i class="fa fa-angle-down"></i></button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="{{ url('/downloadPDF') }}"><i
+                                        class="fa fa-file-pdf-o"></i> PDF</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{{ url('/downloadExcel') }}"><i
+                                        class="fa fa-file-excel-o"></i> Excel</a>
+                        </li>
+                    </ul>
                 </div>
-                
-                <div class="ibox-body">
-                    <div class="table-responsive">
-                        <table id="table" class="table table-striped">
-                            <thead>
+            </div>
+            
+            <div class="ibox-body">
+                <div class="table-responsive">
+                    <table id="table" class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>
+                                #
+                            </th>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Email
+                            </th>
+                            <th>
+                                Level
+                            </th>
+                            <th>
+                                Created At
+                            </th>
+                            <th>
+                                Actions
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($users as $user)
                             <tr>
-                                <th>
-                                    #
-                                </th>
-                                <th>
-                                    Name
-                                </th>
-                                <th>
-                                    Email
-                                </th>
-                                <th>
-                                    Level
-                                </th>
-                                <th>
-                                    Created At
-                                </th>
-                                <th style="width: 15%;">
-                                    Action
-                                </th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($users as $user)
-                                <tr>
-                                    <td>
-                                        {{++$i}}
-                                    </td>
-                                    <td class="py-1">
+                                <td>
+                                    {{++$i}}
+                                </td>
+                                <td class="py-1">
+                                    <a href="{{url('user', $user->id)}}">
+                                        
                                         @if($user->gambar!='')
                                             <img src="{{url('images/user', $user->gambar)}}" alt="image"
                                                  style="margin-right: 10px;"/>
@@ -76,20 +83,41 @@
                                         
                                         @endif
                                         {{$user->name}}
-                                    </td>
-                                    <td>
-                                        {{$user->email}}
-                                    </td>
-                                    <td>
+                                    </a>
+                                </td>
+                                <td>
+                                    {{$user->email}}
+                                </td>
+                                <td>
                                         <span @if($user->level=='admin') class="badge badge-primary"
                                               @else class="badge badge-success" @endif>
                                             {{$user->level}}
                                         </span>
-                                    </td>
-                                    <td>
-                                        {{$user->created_at}}
-                                    </td>
-                                    <td>
+                                </td>
+                                <td>
+                                    {{$user->created_at}}
+                                </td>
+                                
+                                <td>
+                                    <div class="btn-group">
+                                        <form action="{{ route('user.edit', $user->id) }}">
+                                            <button class="btn btn-default btn-xs m-r-5" data-toggle="tooltip"
+                                                    data-original-title="Edit"><i class="fa fa-pencil font-14"></i>
+                                            </button>
+                                        </form>
+                                        
+                                        <form action="{{ route('user.destroy', $user->id) }}"
+                                              class="pull-left" method="post">
+                                            {{ csrf_field() }}
+                                            {{ method_field('delete') }}
+                                            <button class="btn btn-default btn-xs" data-toggle="tooltip"
+                                                    data-original-title="Delete"
+                                                    onclick="return confirm('Anda yakin ingin menghapus data ini?')"><i
+                                                        class="fa fa-trash font-14"></i></button>
+                                        </form>
+                                    </div>
+                                </td>
+                                {{--    <td>
                                         <div class="btn-group">
                                             <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
                                                     aria-expanded="false"> Actions <i
@@ -114,37 +142,48 @@
                                                 </li>
                                             </ul>
                                         </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="text-center">
-                        <ul style="display:inline-block;">
-                            {{$users->links()}}
-                        </ul>
-                    </div>
+                                    </td>--}}
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-center">
+                    <ul style="display:inline-block;">
+                        {{$users->links()}}
+                    </ul>
                 </div>
             </div>
-            
-            {{--<form class="form-horizontal" role="form" enctype="multipart/form-data" method="POST"--}}
-            {{--action="{{url('import')}}">--}}
-            {{--{{csrf_field()}}--}}
-            {{----}}
-            {{--<div class="form-group">--}}
-            {{--<input id="file" type="file" class="uploads form-control input-rounded"--}}
-            {{--name="file" accept=".xls, .xlsx" title = "Choose a excel file">--}}
-            {{--</div>--}}
-            {{----}}
-            {{--<div class="form-group">--}}
-            {{--<div class="col-md-3 col-md-offset-3">--}}
-            {{--<button type="submit" class="btn btn-primary">Import</button>--}}
-            {{--</div>--}}
-            {{--</div>--}}
-            {{--</form>--}}
-        
         </div>
+        
+        {{--<form class="form-horizontal" role="form" enctype="multipart/form-data" method="POST"--}}
+        {{--action="{{url('import')}}">--}}
+        {{--{{csrf_field()}}--}}
+        {{----}}
+        {{--<div class="form-group">--}}
+        {{--<input id="file" type="file" class="uploads form-control input-rounded"--}}
+        {{--name="file" accept=".xls, .xlsx" title="Choose a excel file">--}}
+        {{--</div>--}}
+        {{----}}
+        {{--<div class="form-group">--}}
+        {{--<div class="col-md-3 col-md-offset-3">--}}
+        {{--<button type="submit" class="btn btn-primary">Import</button>--}}
+        {{--</div>--}}
+        {{--</div>--}}
+        {{--</form>--}}
     
     </div>
+
 @endsection
+
+@section('js')
+    <script src="{{asset('js/jquery.dataTables.min.js')}}" type="text/javascript"></script>
+    {{--    <script type="text/javascript">
+            $(document).ready(function() {
+                $('#table').DataTable({
+                    "iDisplayLength": 50
+                });
+    
+            } );
+        </script>--}}
+@stop

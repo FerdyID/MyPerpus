@@ -11,6 +11,13 @@
 |
 */
 
+route::get('pdf', function () {
+    return view('pdfview');
+});
+
+Route::get('icon', function (){
+    return view('icons');
+});
 
 Auth::routes();
 
@@ -18,8 +25,9 @@ Route::get('/', 'HomeController@index');
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::resource('/user', 'UserController');
+Route::get('/downloadPDF', 'UserController@exportPDF');
+Route::get('/downloadExcel', 'UserController@exportExcel');
 
-//Route::get('/downloadPDF/{id}','UserController@downloadPDF');
+Route::resource('/book', 'BookController');
+Route::resource('/category', 'CategoryController');
 
-Route::get('/downloadPDF','UserController@exportPDF');
-Route::get('/downloadExcel','UserController@exportExcel');

@@ -8,7 +8,7 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 
-Use App\User;
+use App\Domain\Entities\User;
 
 class DataExport implements FromCollection, WithHeadings, ShouldAutoSize, WithEvents
 {

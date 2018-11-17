@@ -1,145 +1,145 @@
-@section('js')
-    <script type="text/javascript">
-        function readURL() {
-            var input = this;
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    $(input).prev().attr('src', e.target.result);
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
+<!DOCTYPE html>
+<html>
 
-        $(function () {
-            $(".uploads").change(readURL)
-            $("#f").submit(function () {
-                // do ajax submit or just classic form submit
-                //  alert("fake subminting")
-                return false
-            })
-        })
-
-        var check = function () {
-            if (document.getElementById('password').value == document.getElementById('confirm_password').value && document.getElementById('password').value != '') {
-                document.getElementById('submit').disabled = false;
-                document.getElementById('message').style.color = 'green';
-                document.getElementById('message').innerHTML = 'Matching';
-            } else {
-                document.getElementById('submit').disabled = true;
-                document.getElementById('message').style.color = 'red';
-                document.getElementById('message').innerHTML = 'Not Matching';
-            }
-        }
-        
-    </script>
-@stop
-
-@extends('layouts.layout')
-
-@section('content')
-    <div class="page-content">
-        <div class="col-md-8">
-            <div class="ibox">
-                <div class="ibox-head">
-                    <div class="ibox-title">Tabah User</div>
-                </div>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width initial-scale=1.0">
+    <title>AdminCast | Register</title>
     
-                <div class="col-lg-12">
-                    @if (Session::has('message'))
-                        <div class="alert alert-{{ Session::get('message_type') }}" id="waktu2"
-                             style="margin-top:10px;">{{ Session::get('message') }}</div>
-                    @endif
-                </div>
-                
-                <div class="ibox-body">
-                    <form method="POST" action="{{ route('user.store') }}" enctype="multipart/form-data">
-                        @csrf
-                        
-                        <div class="form-group">
-                            <label for="name" class="col-md-4 control-label">{{ __('Name') }}</label>
-                            <div class="col-md-6 {{ $errors->has('name') ? ' has-error' : '' }}">
-                                <input id="name" type="text"
-                                       class="form-control input-rounded"
-                                       name="name" value="{{ old('name') }}" required>
+    <!-- GLOBAL MAINLY STYLES-->
+    <link href="{{asset('assets/vendors/bootstrap/dist/css/bootstrap.min.css')}}" rel="stylesheet"/>
+    <link href="{{asset('assets/vendors/font-awesome/css/font-awesome.min.css')}}" rel="stylesheet"/>
+    <!-- THEME STYLES-->
+    <link href="{{asset('assets/css/main.min.css')}}" rel="stylesheet"/>
+    <!-- PAGE LEVEL STYLES-->
+    <link href="{{asset('assets/css/pages/auth-light.css')}}" rel="stylesheet"/>
 
-                                @if ($errors->has('name'))
-                                    <span class="text-danger">
-                                        {{ $errors->first('name') }}
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-                        
-                        <div class="form-group ">
-                            <label for="email" class="col-md-4 control-label">{{ __('E-Mail Address') }}</label>
-                            
-                            <div class="col-md-6 {{ $errors->has('email') ? ' has-error' : '' }}">
-                                <input id="email" type="email"
-                                       class="form-control input-rounded" name="email" value="{{ old('email') }}" required>
-                                
-                                @if ($errors->has('email'))
-                                    <span class="text-danger">
-                                        {{ $errors->first('email') }}
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="gambar" class="col-md-4 control-label">Gambar</label>
-                            <div class="col-md-6">
-                                <img class="product" width="200" height="200"/>
-                                <input type="file" class="uploads form-control input-rounded" style="margin-top: 20px;"
-                                       name="gambar">
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="level" class="col-md-4 control-label">Level</label>
-                            <div class="col-md-6">
-                                <select class="form-control input-rounded" name="level" required="">
-                                    <option value=""></option>
-                                    <option value="admin">Admin</option>
-                                    <option value="user">User</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="password" class="col-md-4 control-label">Password</label>
-                            <div class="col-md-6 {{ $errors->has('password') ? ' has-error' : '' }}">
-                                <input id="password" type="password" class="form-control input-rounded"
-                                       onkeyup='check();' name="password" required>
-                                @if ($errors->has('password'))
-                                    <span class="text-danger">
-                                        {{ $errors->first('password') }}
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="password-confirm" class="col-md-4 control-label">Confirm Password</label>
-                            <div class="col-md-6">
-                                <input id="confirm_password" type="password" onkeyup="check()"
-                                       class="form-control input-rounded" name="password_confirmation" required>
-                                <span id='message'></span>
-                            </div>
-                        </div>
-                        <br>
-                        
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary btn-fix" id="submit">
-                                Register
-                            </button>
-                            <button type="reset" class="btn btn-danger btn-fix">
-                                Reset
-                            </button>
-                            <a href="{{url('user')}}" class="btn btn-light btn-fix pull-right">Back</a>
-                        </div>
-                    </form>
-                </div>
+</head>
+
+<body>
+<div class="content">
+    <div class="brand">
+        <span><i class="fa fa-code"> </i>UniCode</span>
+    </div>
+    
+    <form style="box-shadow: 0 8px 8px rgba(0, 0, 0, 0.2);" action="{{ url('register') }}" method="post">
+        {{csrf_field()}}
+        
+        <div class="login-header text-center text-">
+            <i style="font-size: 100px;" class="fa fa-user-circle"></i>
+        </div>
+        <h3 class="login-title">Sign Up</h3>
+
+        <div class="form-group">
+            <div class="input-group-icon right">
+                <div class="input-icon"><i class="fa fa-user font-20"></i></div>
+                <input class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" type="text" name="name"
+                       value="{{ old('name') }}" placeholder="Name" required autofocus>
+                @if ($errors->has('name'))
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $errors->first('name') }}</strong>
+                    </span>
+                @endif
             </div>
         </div>
-    </div>
-@endsection
+    
+        <div class="form-group">
+            <div class="input-group-icon right">
+                <div class="input-icon"><i class="fa fa-envelope"></i></div>
+                <input class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" type="email" name="email"
+                       value="{{ old('email') }}" placeholder="Email" required autofocus autocomplete="off">
+                @if ($errors->has('email'))
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $errors->first('email') }}</strong>
+                    </span>
+                @endif
+            </div>
+        </div>
+    
+        <div class="form-group">
+            <div class="input-group-icon right">
+                <div class="input-icon"><i class="fa fa-lock font-20"></i></div>
+                <input id="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" type="password"
+                       name="password" placeholder="Password" required>
+                @if ($errors->has('password'))
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $errors->first('password') }}</strong>
+                    </span>
+                @endif
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <div class="input-group-icon right">
+                <div class="input-icon"><i class="fa fa-check font-18"></i></div>
+                <input id="confirm_password" type="password" onkeyup="check()"
+                       class="form-control" name="password_confirmation" placeholder="Confirm Password" required>
+                <span id='message'></span>
+            </div>
+        </div>
+        
+        <div class="form-group text-left">
+            <label class="ui-checkbox ui-checkbox-info">
+                <input type="checkbox" name="agree">
+                <span class="input-span"></span>I agree the terms and policy</label>
+        </div><br>
+        <div class="form-group">
+            <button class="btn btn-info btn-block" type="submit">Sign up</button>
+        </div>
+        <div class="social-auth-hr">
+        </div>
+        <div class="text-center">Already a member?
+            <a class="color-blue" href="{{route('login')}}">Login here</a>
+        </div>
+    </form>
+    <br>
+    
+</div>
+<!-- CORE SCRIPTS-->
+<script src="{{asset('js/jquery-3.3.1.min.js')}}" type="text/javascript"></script>
+<script src="{{asset('assets/vendors/popper.js/dist/umd/popper.min.js')}}" type="text/javascript"></script>
+<script src="{{asset('assets/vendors/bootstrap/dist/js/bootstrap.min.js')}}" type="text/javascript"></script>
+<!-- PAGE LEVEL PLUGINS -->
+<script src="{{asset('assets/vendors/jquery-validation/dist/jquery.validate.min.js')}}" type="text/javascript"></script>
+<!-- CORE SCRIPTS-->
+<script src="{{asset('assets/js/app.min.js')}}" type="text/javascript"></script>
+<!-- PAGE LEVEL SCRIPTS-->
+
+<script type="text/javascript">
+    $(function() {
+        $('#register-form').validate({
+            errorClass: "help-block",
+            rules: {
+                first_name: {
+                    required: true,
+                    minlength: 2
+                },
+                last_name: {
+                    required: true,
+                    minlength: 2
+                },
+                email: {
+                    required: true,
+                    email: true
+                },
+                password: {
+                    required: true,
+                    confirmed: true
+                },
+                password_confirmation: {
+                    equalTo: password
+                }
+            },
+            highlight: function(e) {
+                $(e).closest(".form-group").addClass("has-error")
+            },
+            unhighlight: function(e) {
+                $(e).closest(".form-group").removeClass("has-error")
+            },
+        });
+    });
+</script>
+</body>
+
+</html>

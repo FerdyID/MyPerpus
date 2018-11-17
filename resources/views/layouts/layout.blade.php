@@ -15,6 +15,8 @@
     <!-- THEME STYLES-->
     <link href="{{asset('assets/css/main.min.css')}}" rel="stylesheet"/>
     <!-- PAGE LEVEL STYLES-->
+    @yield('styles')
+
 </head>
 
 <body class="has-animation fixed-navbar fixed-layout">
@@ -30,16 +32,15 @@
 
 <!-- BEGIN PAGA BACKDROPS-->
 
-<div class="sidenav-backdrop backdrop"></div>
+{{-- <div class="sidenav-backdrop backdrop"></div> --}}
 <div id="loader" class="preloader-backdrop">
-<div class="text-center fixed-bottom"><img src="{{asset('loading.gif')}}"></div>
+    <div class="text-center fixed-bottom"><img src="{{asset('loading.gif')}}"></div>
 </div>
 
 <!-- END PAGA BACKDROPS
 
 <!-- CORE PLUGINS-->
-{{--<script src="{{asset('assets/vendors/jquery/dist/jquery.min.js')}}" type="text/javascript"></script>--}}
-<script src="{{asset('js/jquery-3.3.1.min.js')}}" type="text/javascript"></script>
+<script src="{{asset('assets/vendors/jquery/dist/jquery.min.js')}}" type="text/javascript"></script>
 <script src="{{asset('assets/vendors/popper.js/dist/umd/popper.min.js')}}" type="text/javascript"></script>
 <script src="{{asset('assets/vendors/bootstrap/dist/js/bootstrap.min.js')}}" type="text/javascript"></script>
 <script src="{{asset('assets/vendors/metisMenu/dist/metisMenu.min.js')}}" type="text/javascript"></script>
@@ -60,21 +61,32 @@
 @show
 
 <script>
-   
     $(document).ready(function () {
         $("#loader").delay(500).fadeOut("slow");
-        
+
         var pathname = window.location.pathname;
         console.log('url path =>', pathname);
         switch (pathname) {
             case '/':
                 $('#nav-user').removeClass('active');
+                $('#nav-books').removeClass('active');
+                $('#nav-listbook').removeClass('active');
                 $('#nav-dashboard').addClass('active');
                 break;
             case '/user':
             case '/user/create':
                 $('#nav-dashboard').removeClass('active');
+                $('#nav-books').removeClass('active');
+                $('#nav-listbook').removeClass('active');
                 $('#nav-user').addClass('active');
+                break;
+            case '/book':
+            case '/book/create':
+                $('#nav-dashboard').removeClass('active');
+                $('#nav-user').removeClass('active');
+                // $('#nav-books').addClass('active');
+                // $('#colapse-book').addClass('in');
+                $('#nav-listbook').addClass('active');
                 break;
             default:
             // alert('Looking forward to the Weekend');
@@ -82,6 +94,4 @@
     });
 </script>
 </body>
-
-
 </html>

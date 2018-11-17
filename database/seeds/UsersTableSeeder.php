@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Domain\Entities\User;
+use Carbon\Carbon;
 
 class UsersTableSeeder extends Seeder
 {
@@ -11,7 +13,7 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        \App\User::insert([
+        User::insert([
             [
                 'id'  			=> 1,
                 'name'  			=> 'Admin',
@@ -20,8 +22,8 @@ class UsersTableSeeder extends Seeder
                 'gambar'			=> NULL,
                 'level'			=> 'admin',
                 'remember_token'	=> NULL,
-                'created_at'      => \Carbon\Carbon::now(),
-                'updated_at'      => \Carbon\Carbon::now()
+                'created_at'      => Carbon::now(),
+                'updated_at'      => Carbon::now()
             ],
             [
                 'id'  			=> 2,
@@ -31,8 +33,8 @@ class UsersTableSeeder extends Seeder
                 'gambar'			=> NULL,
                 'level'			=> 'user',
                 'remember_token'	=> NULL,
-                'created_at'      => \Carbon\Carbon::now(),
-                'updated_at'      => \Carbon\Carbon::now()
+                'created_at'      => Carbon::now(),
+                'updated_at'      => Carbon::now()
             ]
         ]);
     }

@@ -1,16 +1,19 @@
 @extends('layouts.layout')
 @section('content')
-    
     <div class="page-content fade-in-up">
-    
+        
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><i class="fa fa-home font-18"></i> Dashboard</li>
+        </ol>
+        
         <div class="col-lg-12">
             @if (Session::has('message'))
-                <div class="alert alert-{{ Session::get('message_type') }}" id="waktu2"
+                <div class="alert alert-{{ Session::get('message_type') }}"
                      style="margin-top:10px;">{{ Session::get('message') }}</div>
             @endif
         </div>
         
-        <div class="row">
+        {{--<div class="row">
             <div class="col-lg-3 col-md-6">
                 <div class="ibox bg-success color-white widget-stat">
                     <div class="ibox-body">
@@ -59,6 +62,6 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>--}}
     </div>
 @endsection

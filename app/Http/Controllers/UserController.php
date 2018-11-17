@@ -2,159 +2,164 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Entities\User;
 use Illuminate\Http\Request;
-use App\User;
+use App\Domain\Repositories\UserRepository;
 use Auth;
 use PDF;
 use Excel;
 use App\Export\DataExport;
 use Illuminate\Support\Facades\Session;
+use Yajra\DataTables\DataTables;
 use Carbon\Carbon;
-use Softon\SweetAlert\Facades\SWAL;
+use SWAL;
 
 class UserController extends Controller
 {
-    public function __construct()
+    protected $user;
+    
+    public function __construct(UserRepository $user)
     {
         $this->middleware('auth');
+        $this->middleware('authAdmin', ['except' => ['edit', 'show']]);
+        $this->user = $user;
     }
-
-    public function index(Request $search)
+    
+    /**
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     */
+    public function index(Request $request)
     {
-        if (Auth::user()->level == 'user') {
-            Swal::message('Opss..', 'Access Denied!', 'error');
-            return redirect('/');
-        }
- 
-        $perPage = 3;
-        $users = User::where('name', 'like', '%' . $search->input('search'). '%')->paginate($perPage);
+//        User::withTrashed()->restore();
+        $users = $this->user->paginate($limit=3, 'name', $request->input('search'));
         
-//        $users   = User::paginate($perPage);
-        $i       = ($users->currentPage() - 1) * $perPage;
+        $i     = ($users->currentPage() - 1) * $limit;
         return view('auth.users', compact('users', 'i'));
     }
-
+    
+    
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     */
     public function create()
     {
-        if (Auth::user()->level == 'user') {
-            Swal::message('Opss..', 'Access Denied!', 'error');
-            return redirect()->to('/');
-        }
-        return view('auth.register');
+        return view('auth.create');
     }
-
+    
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request)
     {
-        $count = User::where('email', $request->input('email'))->count();
-
+        $count = $this->user->getByField('email', $request->input('email'))->count();
         if ($count > 0) {
             Session::flash('message', 'Email sudah digunakan!');
             Session::flash('message_type', 'danger');
-            //            return redirect()->to('user');
         }
-
+        
         $this->validate($request, [
             'name'     => 'required|string|max:100',
             'email'    => 'required|string|email|max:100|unique:users',
             'password' => 'required|string|min:6|confirmed',
         ]);
-
-
+        
         if ($request->file('gambar') == '') {
-            $gambar = NULL;
+            $image = NULL;
         } else {
             $file     = $request->file('gambar');
             $dt       = Carbon::now();
-            $acak     = $file->getClientOriginalExtension();
-            $fileName = rand(1111, 9999) . '-' . $dt->format('Y-m-d-H-i-s') . '.' . $acak;
+            $type     = $file->getClientOriginalExtension();
+            $fileName = rand(1111, 9999) . '-' . $dt->format('Y-m-d-H-i-s') . '.' . $type;
             $request->file('gambar')->move("images/user", $fileName);
-            $gambar = $fileName;
+            $image = $fileName;
         }
-
-        User::create([
-            'name'     => $request->input('name'),
-            'email'    => $request->input('email'),
-            'level'    => $request->input('level'),
-            'password' => bcrypt(($request->input('password'))),
-            'gambar'   => $gambar
-        ]);
-
+        
+        $this->user->created($image, $request->all());
+        
         Session::flash('message', 'Berhasil ditambahkan!');
         Session::flash('message_type', 'success');
         return redirect()->to('user');
     }
-
+    
+    /**
+     * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     */
     public function show($id)
     {
-        if ((Auth::user()->level == 'user') && (Auth::user()->id != $id)) {
+        $user = $this->user->getById($id);
+        
+        if (Auth::user()->level == 'admin'){
+            return view('auth.show', compact('user'));
+        }
+        if (Auth::user()->id != $id) {
             Swal::message('Opss..', 'Access Denied!', 'error');
             return redirect()->to('/');
         }
-
-        $user = User::findOrFail($id);
-
         return view('auth.show', compact('user'));
     }
-
+    
+    /**
+     * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     */
     public function edit($id)
     {
-        if ((Auth::user()->level == 'user') && (Auth::user()->id != $id)) {
+        $user = $this->user->getById($id);
+        
+        if (Auth::user()->level == 'admin'){
+            return view('auth.edit', compact('user'));
+        }
+        if (Auth::user()->id != $id) {
             Swal::message('Opss..', 'Access Denied!', 'error');
             return redirect()->to('/');
         }
-
-        $user = User::findOrFail($id);
-
         return view('auth.edit', compact('user'));
     }
-
-    public function update(Request $request, $id)
+    
+    /**
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function update($id, Request $request)
     {
-        $user_data = User::findOrFail($id);
-
+        $user = $this->user->getById($id);
+        
         if ($request->file('gambar')) {
+            \File::delete(public_path('images/user/'.$user->gambar));
             $file     = $request->file('gambar');
             $dt       = Carbon::now();
-            $acak     = $file->getClientOriginalExtension();
-            $fileName = rand(1111, 9999) . '-' . $dt->format('Y-m-d-H-i-s') . '.' . $acak;
+            $type     = $file->getClientOriginalExtension();
+            $fileName = rand(1111, 9999) . '-' . $dt->format('Y-m-d-H-i-s') . '.' . $type;
             $request->file('gambar')->move("images/user", $fileName);
-            $user_data->gambar = $fileName;
+            $image = $fileName;
+        }else{
+            $image = $user->gambar;
         }
-
-        $user_data->name  = $request->input('name');
-        $user_data->email = $request->input('email');
-        if ($request->input('password')) {
-            if ($user_data->level == 'admin') {
-                $user_data->level = $request->input('level');
-            } else {
-                $user_data->level = 'user';
-            }
-        }
-
-        if ($request->input('password')) {
-            $user_data->password = bcrypt(($request->input('password')));
-
-        }
-
-        $user_data->update();
-
+        
+        $this->user->updated($id, $image, $request->all());
+        
         Session::flash('message', 'Berhasil diubah!');
         Session::flash('message_type', 'success');
-
-
+        
         if (Auth::user()->level == 'admin') {
             return redirect()->to('user');
         } else {
             return redirect()->to('/');
         }
-
     }
-
+    
+    /**
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     */
     public function destroy($id)
     {
         if (Auth::user()->id != $id) {
-            $user_data = User::findOrFail($id);
-            $user_data->delete();
+            $this->user->delete($id);
             Session::flash('message', 'Berhasil dihapus!');
             Session::flash('message_type', 'success');
         } else {
@@ -163,72 +168,23 @@ class UserController extends Controller
         }
         return redirect()->to('user');
     }
-
+    
+    /**
+     * @return mixed
+     */
     public function exportPDF()
     {
-        $users = User::all();
+        $users = $this->user->getAll();
         $pdf   = PDF::loadView('auth.pdf', compact('users'))->setPaper('a4', 'portrait')->setWarnings(false);
         return $pdf->download('Laporan_User_' . date('Y-m-d_H-i-s') . '.pdf');
     }
-
+    
+    /**
+     * @return mixed
+     */
     public function exportExcel()
     {
-        $nama = 'laporan_user_' . date('Y-m-d_H-i-s');
-        return Excel::download(new DataExport, $nama . '.xlsx');
+        $name = 'laporan_user_' . date('Y-m-d_H-i-s');
+        return Excel::download(new DataExport, $name . '.xlsx');
     }
-
-    public function createImport(Request $file)
-    {
-        try {
-
-            \Excel::filter('chunk')->load($file)->chunk(20000, function ($results) {
-                $is_valid_import_file = count($results) > 0;
-                if ($is_valid_import_file) {
-                    $result = [];
-
-                    foreach ($results as $roww) {
-                        foreach ($roww as $row) {
-
-                            //                            $confirmation_code = str_random(30);
-                            $password = str_random(30);
-                            if ($row->nik != null) {
-                                $data = [
-                                    'name'       => $row->nama,
-                                    'email'      => $row->email,
-                                    'password'   => bcrypt($password),
-                                    'gambar'     => ($row['gambar'] == null) ? '0' : ('gambar'),
-                                    'level'      => ($row['level'] == null) ? '0' : ('user'),
-                                    'created_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s'),
-                                    'updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s'),
-                                ];
-                                dd($data);
-                                array_push($result, $data);
-                            }
-                        }
-                    }
-                    //dump($result);
-                    foreach (array_chunk($result, 100) as $t) {
-                        \DB::table('users')->insert($t);
-                    }
-                }
-            });
-
-            return response()->json(
-                [
-                    'success' => true,
-                    'result'  => [
-                        'message' => 'Berhasil menyimpan data.',
-                    ],
-                ]
-            );
-        } catch (\Exception $e) {
-            // store errors to log
-            \Log::error('class : ' . User::class . ' method : create | ' . $e);
-
-            return $e;
-
-        }
-    }
-
-
 }

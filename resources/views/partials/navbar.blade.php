@@ -37,22 +37,16 @@
                     @endif
                     <span>{{ Auth::user()->name }}</span><i class="fa fa-angle-down m-l-5"></i></a>
                 <ul class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="{{ route('user.edit', Auth::user()->id)}}"><i class="fa fa-user"></i>Profile</a>
-                    <a class="dropdown-item" href="profile.html"><i class="fa fa-cog"></i>Settings</a>
+                    <a class="dropdown-item" href="{{ url('user', Auth::user()->id)}}"><i class="fa fa-user"></i>Profile</a>
+                    <a class="dropdown-item" href="{{ route('user.edit', Auth::user()->id)}}"><i class="fa fa-cog"></i>Settings</a>
                     <li class="dropdown-divider"></li>
                     
-                    <div>
-                        <a class="dropdown-item" href="{{ route('logout') }}"
-                           onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();"><i
-                                    class="fa fa-power-off"></i>
-                            {{ __('Logout') }}
-                        </a>
-                        
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                            @csrf
-                        </form>
-                    </div>
+                    <a class="dropdown-item" href="{{ route('logout') }}"
+                       onclick="event.preventDefault();
+                       document.getElementById('logout-form').submit();"><i class="fa fa-sign-out"></i>Logout
+                    </a>
+                    
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;"> @csrf </form>
                 </ul>
             </li>
         </ul>
