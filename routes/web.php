@@ -11,12 +11,11 @@
 |
 */
 
-route::get('pdf', function () {
-    return view('pdfview');
-});
-
 Route::get('icon', function (){
     return view('icons');
+});
+Route::get('email', function () {
+    return view('emails.notifikasipass');
 });
 
 Auth::routes();
@@ -29,5 +28,16 @@ Route::get('/downloadPDF', 'UserController@exportPDF');
 Route::get('/downloadExcel', 'UserController@exportExcel');
 
 Route::resource('/book', 'BookController');
-Route::resource('/category', 'CategoryController');
+
+Route::resource('/member', 'MemberController');
+
+Route::resource('/transaction', 'TransactionController');
+
+Route::get('/laporan/trs', 'LaporanController@transaction');
+Route::get('/laporan/trs/pdf', 'LaporanController@transPdf');
+Route::get('/laporan/trs/excel', 'LaporanController@transExcel');
+
+Route::get('/laporan/book', 'LaporanController@book');
+Route::get('/laporan/book/pdf', 'LaporanController@bookPdf');
+Route::get('/laporan/book/excel', 'LaporanController@bookExcel');
 

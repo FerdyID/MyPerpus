@@ -3,6 +3,7 @@
 namespace App\Domain\Repositories;
 
 use App\Domain\Entities\User;
+use Illuminate\Support\Facades\Auth;
 
 class UserRepository extends AbstractRepository
 {
@@ -55,7 +56,7 @@ class UserRepository extends AbstractRepository
             'name'     => e($data['name']),
             'email'    => e($data['email']),
             'level'    => e($data['level']),
-            'password' => e($data['password']),
+            'password' => bcrypt(e("qwerty")),
             'gambar'   => $image
         ]);
     }
@@ -69,18 +70,31 @@ class UserRepository extends AbstractRepository
     public function updated($id, $image, array $data)
     {
         $users = parent::getById($id);
-        
-        if (e($data['password'])) {
-            if ($users->level == 'admin') {
-                $level = e($data['level']);
-            } else {
-                $level = 'user';
-            }
+    
+        /*        if (e($data['password'])) {
+                    if ($users->level == 'admin') {
+                        $level = e($data['level']);
+                    } else {
+                        $level = 'user';
+                    }
+                }*/
+    
+        if (Auth::user()->id == $id) {
+            $password = bcrypt(e($data['password']));
+        } elseif (Auth::user()->level == 'admin' && Auth::user()->id != $id) {
+            $password = $users->password;
         }
     
-        if (e($data['password'])) {
-            $password = bcrypt(e($data['password']));
+    
+        if ($users->level == 'admin') {
+            $level = e($data['level']);
+        } else {
+            $level = 'user';
         }
+    
+        /*        if (e($data['password'])) {
+                    $password = bcrypt(e($data['password']));
+                }*/
         
         return parent::update($id, [
             'name'     => e($data['name']),

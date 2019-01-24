@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width initial-scale=1.0">
-    <title>AdminCast | Register</title>
+    <title>Register | MyPerpus</title>
     
     <!-- GLOBAL MAINLY STYLES-->
     <link href="{{asset('assets/vendors/bootstrap/dist/css/bootstrap.min.css')}}" rel="stylesheet"/>
@@ -20,7 +20,7 @@
 <body>
 <div class="content">
     <div class="brand">
-        <span><i class="fa fa-code"> </i>UniCode</span>
+        {{--<span><i class="fa fa-code"> </i>UniCode</span>--}}
     </div>
     
     <form style="box-shadow: 0 8px 8px rgba(0, 0, 0, 0.2);" action="{{ url('register') }}" method="post">

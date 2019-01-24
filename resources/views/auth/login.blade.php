@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width initial-scale=1.0">
-    <title>Admincast | Login</title>
+    <title>Login | MyPerpus</title>
     
     <!-- GLOBAL MAINLY STYLES-->
     <link href="{{asset('assets/vendors/bootstrap/dist/css/bootstrap.min.css')}}" rel="stylesheet"/>
@@ -20,7 +20,7 @@
 <body class="bg">
 <div class="content">
     <div class="brand">
-        <span><i class="fa fa-code"> </i>UniCode</span>
+        <span><i class="fa fa-university"> </i>MyPerpus</span>
     </div>
     <form id="login-form" class="card" style="box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.1);" action="{{ route('login') }}" method="post">
         @csrf
@@ -55,21 +55,17 @@
         </div>
         
         <div class="form-group d-flex justify-content-between">
-            <label class="ui-checkbox ui-checkbox-info">
-                <input type="checkbox">
-                <span class="input-span" type="checkbox" name="remember"
-                      id="remember" {{ old('remember') ? 'checked' : '' }}></span>Remember me</label>
             <a href="{{ route('password.request') }}">Forgot password?</a>
         </div>
         <br>
         <div class="form-group">
             <button class="btn btn-info btn-block" type="submit">Login</button>
         </div>
-        <div class="social-auth-hr">
-        </div>
-        <div class="text-center">Not a member?
-            <a class="color-blue" href="{{ route('register') }}">Create account</a>
-        </div>
+        {{--        <div class="social-auth-hr">
+                </div>
+                <div class="text-center">Not a member?
+                    <a class="color-blue" href="{{ route('register') }}">Create account</a>
+                </div>--}}
     </form>
 </div>
 <!-- CORE SCRIPTS-->

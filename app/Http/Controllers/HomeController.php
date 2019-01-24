@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Entities\Book;
+use App\Domain\Entities\Member;
+use App\Domain\Entities\Transaction;
 use Illuminate\Http\Request;
 use Session;
 use Auth;
@@ -18,7 +21,7 @@ class HomeController extends Controller
     {
         $this->middleware('auth');
     }
-
+    
     /**
      * Show the application dashboard.
      *
@@ -28,9 +31,21 @@ class HomeController extends Controller
     
     public function index()
     {
-//        Session::flash('message', 'You are logged in!');
-        $users= User::where('level', 'user')->get();
+        $users   = User::where('level', 'user')->get();
+        $members = Member::get();
+        $books   = Book::get();
         
-        return view('home', compact('users'));
+        if (Auth::user()->level == 'user') {
+            $datas = Transaction::where('status', 'pinjam')
+                ->where('member_id', Auth::user()->member->id)
+                ->get();
+            $trans = Transaction::where('member_id', Auth::user()->member->id)
+                ->get();
+        } else {
+            $datas = Transaction::where('status', 'pinjam')->get();
+            $trans = Transaction::get();
+        }
+        
+        return view('home', compact('users', 'trans', 'books', 'members', 'datas'));
     }
 }

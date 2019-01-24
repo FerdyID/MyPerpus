@@ -1,8 +1,8 @@
 <header class="header">
     <div class="page-brand">
         <a class="link" href="/">
-            <span class="brand">Admin
-                <span class="brand-tip">CAST</span>
+            <span class="brand">My
+                <span class="brand-tip">PERPUS</span>
             </span>
             {{--<span class="brand-mini">AC</span>--}}
         </a>
@@ -14,7 +14,7 @@
                 <a class="nav-link sidebar-toggler js-sidebar-toggler"><i class="ti-menu"></i></a>
             </li>
             <li>
-                <form class="navbar-search" method="GET" action={{url('user')}}>
+                <form class="navbar-search" method="GET" action={{route('book.index')}}>
                     <div class="rel">
                         <span class="search-icon"><i class="ti-search"></i></span>
                         <input class="form-control" name="search" placeholder="Search here..." value="">

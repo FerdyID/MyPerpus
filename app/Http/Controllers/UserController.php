@@ -21,7 +21,7 @@ class UserController extends Controller
     public function __construct(UserRepository $user)
     {
         $this->middleware('auth');
-        $this->middleware('authAdmin', ['except' => ['edit', 'show']]);
+        $this->middleware('authAdmin', ['except' => ['edit', 'update', 'show']]);
         $this->user = $user;
     }
     
@@ -32,7 +32,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
 //        User::withTrashed()->restore();
-        $users = $this->user->paginate($limit=3, 'name', $request->input('search'));
+        $users = $this->user->paginate($limit = 10, 'name', $request->input('search'));
         
         $i     = ($users->currentPage() - 1) * $limit;
         return view('auth.users', compact('users', 'i'));
@@ -62,7 +62,7 @@ class UserController extends Controller
         $this->validate($request, [
             'name'     => 'required|string|max:100',
             'email'    => 'required|string|email|max:100|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+            //            'password' => 'required|string|min:6|confirmed',
         ]);
         
         if ($request->file('gambar') == '') {
@@ -77,9 +77,7 @@ class UserController extends Controller
         }
         
         $this->user->created($image, $request->all());
-        
-        Session::flash('message', 'Berhasil ditambahkan!');
-        Session::flash('message_type', 'success');
+        SWAL::message('Berhasil.', 'Data telah ditambahkan!', 'success');
         return redirect()->to('user');
     }
     
@@ -141,9 +139,8 @@ class UserController extends Controller
         }
         
         $this->user->updated($id, $image, $request->all());
-        
-        Session::flash('message', 'Berhasil diubah!');
-        Session::flash('message_type', 'success');
+    
+        SWAL::message('Berhasil.', 'Berhasil diubah!', 'success');
         
         if (Auth::user()->level == 'admin') {
             return redirect()->to('user');
@@ -160,11 +157,9 @@ class UserController extends Controller
     {
         if (Auth::user()->id != $id) {
             $this->user->delete($id);
-            Session::flash('message', 'Berhasil dihapus!');
-            Session::flash('message_type', 'success');
+            SWAL::message('Berhasil.', 'Berhasil dihapus!', 'success');
         } else {
-            Session::flash('message', 'Akun anda sendiri tidak bisa dihapus!');
-            Session::flash('message_type', 'danger');
+            SWAL::message('Oopss.', 'Akun anda sendiri tidak bisa dihapus!', 'error');
         }
         return redirect()->to('user');
     }

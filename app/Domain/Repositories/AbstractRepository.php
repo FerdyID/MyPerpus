@@ -43,7 +43,7 @@ abstract class AbstractRepository implements AbstractInterface
         return $this->model->where($att, $field);
     }
     
-    public function paginate($limit = 3, $key, $search)
+    public function paginate($limit, $key, $search)
     {
         return $this->model->where($key, 'like', '%' . $search . '%')->paginate($limit);
     }

@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
-    use Notifiable, SoftDeletes;
+    use Notifiable;
+    
+    //    use SoftDeletes;
     
     /**
      * The attributes that are mass assignable.
@@ -27,4 +29,12 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+    
+    /**
+     * Method One To One
+     */
+    public function member()
+    {
+        return $this->hasOne(Member::class);
+    }
 }

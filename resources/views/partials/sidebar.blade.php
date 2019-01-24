@@ -20,33 +20,38 @@
                 </a>
             </li>
             <li class="heading">FEATURES</li>
-            <li id="nav-user">
-                <a href="{{route('user.index')}}"><i class="sidebar-item-icon fa fa-user-circle"></i>
-                    <span class="nav-label">Users</span></a>
+            @if(Auth::user()->level == 'admin')
+                <li id="nav-user">
+                    <a href="{{route('user.index')}}"><i class="sidebar-item-icon fa fa-user-circle"></i>
+                        <span class="nav-label">Users</span></a>
+                </li>
+        
+                <li id="nav-members">
+                    <a href="{{route('member.index')}}"><i class="sidebar-item-icon fa fa-users"></i>
+                        <span class="nav-label">Members</span></a>
+                </li>
+            @endif
+            <li id="nav-books">
+                <a href="{{route('book.index')}}"><i class="sidebar-item-icon fa fa-book"></i>
+                    <span class="nav-label">List Books</span></a>
+            </li>
+            <li id="nav-transactions">
+                <a href="{{route('transaction.index')}}"><i class="sidebar-item-icon fa fa-address-book"></i>
+                    <span class="nav-label">Transaction</span></a>
             </li>
     
-            <li id="nav-books">
-                <a href="#"><i class="sidebar-item-icon fa fa-book"></i>
-                    <span class="nav-label">Books</span><i class="fa fa-angle-left arrow"></i></a>
-                <ul id="colapse-book" class="nav-2-level collapse">
+    
+            <li id="nav-laporan">
+                <a href="#"><i class="sidebar-item-icon fa fa-tasks"></i>
+                    <span class="nav-label">Laporan</span><i class="fa fa-angle-left arrow"></i></a>
+                <ul id="colapse-laporan" class="nav-2-level collapse">
                     <li>
-                        <a id="nav-listbook" href="{{route('book.index')}}">List Books</a>
+                        <a id="nav-lapbook" href="{{url('laporan/book')}}">Laporan Buku</a>
                     </li>
                     <li>
-                        <a id="nav-categories" href="{{route('category.index')}}">Book Categories</a>
+                        <a id="nav-laptrans" href="{{url('laporan/trs')}}">Laporan Transaksi</a>
                     </li>
                 </ul>
-            </li>
-            
-            
-            {{--<li>--}}
-                {{--<a href="{{route('book.index')}}"><i class="sidebar-item-icon fa fa-book"></i>--}}
-                    {{--<span class="nav-label">Books</span></a>--}}
-            {{--</li>--}}
-            <li>
-                <a href="{{url('icon')}}"><i class="sidebar-item-icon fa fa-smile-o"></i>
-                    <span class="nav-label">Icons</span>
-                </a>
             </li>
         </ul>
     </div>

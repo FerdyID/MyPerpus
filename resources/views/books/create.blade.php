@@ -1,12 +1,4 @@
 @section('js')
-    
-    <script type="text/javascript">
-
-        $(document).ready(function () {
-            $(".users").select2();
-        });
-    </script>
-    
     <script type="text/javascript">
         function readURL() {
             var input = this;
@@ -53,7 +45,6 @@
                 
                 <form action="{{ route('book.store') }}" method="POST" enctype="multipart/form-data">
                     {{ csrf_field() }}
-                    
                     
                     <div class="form-group{{ $errors->has('judul') ? ' has-error' : '' }}">
                         <label for="judul" class="col-md-4 control-label">Judul</label>
@@ -122,7 +113,7 @@
                                       placeholder="Description">{{ old('description') }}</textarea>
                             
                             @if ($errors->has('deskripsi'))
-                                <span class="help-block">
+                                <span class="help-block">php
                                         <strong>{{ $errors->first('deskripsi') }}</strong>
                                     </span>
                             @endif

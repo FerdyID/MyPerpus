@@ -1,3 +1,13 @@
+@section('js')
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#table').DataTable({
+                "iDisplayLength": 10
+            });
+
+        });
+    </script>
+@stop
 @extends('layouts.layout')
 @section('content')
     <div class="page-content">
@@ -8,12 +18,14 @@
             <li class="breadcrumb-item">Books</li>
         </ol>
         
-        <div style="margin-bottom: 20px;">
-            <a href="{{ route('book.create') }}" class="btn btn-primary btn-rounded btn-fw"><i class="fa fa-plus"></i>
-                Add Book</a>
-        </div>
+        @if(Auth::user()->level == 'admin')
+            <div style="margin-bottom: 20px;">
+                <a href="{{ route('book.create') }}" class="btn btn-primary btn-rounded btn-fw"><i
+                            class="fa fa-plus"></i>
+                    Add Book</a>
+            </div>
+        @endif
         
-        {{--<div class="alert alert-danger alert-bordered">Testt</div>--}}
         @if (Session::has('message'))
             <div class="alert alert-{{ Session::get('message_type') }} alert-bordered">{{ Session::get('message') }}</div>
         @endif
@@ -49,12 +61,11 @@
                             <th>
                                 Jumlah
                             </th>
-                            <th>
-                                Deskripsi
-                            </th>
-                            <th>
-                                Actions
-                            </th>
+                            @if(Auth::user()->level == 'admin')
+                                <th>
+                                    Actions
+                                </th>
+                            @endif
                         </tr>
                         </thead>
                         <tbody>
@@ -65,7 +76,6 @@
                                 </td>
                                 <td class="py-1">
                                     <a href="{{url('book', $book->id)}}">
-                                        
                                         @if($book->cover!='')
                                             <img src="{{url('images/book', $book->cover)}}" alt="image"
                                                  style="margin-right: 10px;"/>
@@ -89,35 +99,39 @@
                                 <td>
                                     {{$book->jumlah_buku}}
                                 </td>
-                                <td>
-                                    {{$book->deskripsi}}
-                                </td>
                                 
-                                <td>
-                                    <div class="btn-group">
-                                        <form action="{{ route('book.edit', $book->id) }}">
-                                            <button class="btn btn-default btn-xs m-r-5" data-toggle="tooltip"
-                                                    data-original-title="Edit"><i class="fa fa-pencil font-14"></i>
-                                            </button>
-                                        </form>
-                                        
-                                        <form action="{{ route('book.destroy', $book->id) }}"
-                                              class="pull-left" method="post">
-                                            {{ csrf_field() }}
-                                            {{ method_field('delete') }}
-                                            <button class="btn btn-default btn-xs" data-toggle="tooltip"
-                                                    data-original-title="Delete"
-                                                    onclick="return confirm('Anda yakin ingin menghapus buku ini?')"><i
-                                                        class="fa fa-trash font-14"></i></button>
-                                        </form>
-                                    </div>
-                                </td>
+                                @if(Auth::user()->level == 'admin')
+                                    <td>
+                                        <div class="btn-group">
+                                            <form action="{{ route('book.edit', $book->id) }}">
+                                                <button class="btn btn-default btn-xs m-r-5" data-toggle="tooltip"
+                                                        data-original-title="Edit"><i class="fa fa-pencil font-14"></i>
+                                                </button>
+                                            </form>
+                                            
+                                            <form action="{{ route('book.destroy', $book->id) }}"
+                                                  class="pull-left" method="post">
+                                                {{ csrf_field() }}
+                                                {{ method_field('delete') }}
+                                                <button class="btn btn-default btn-xs" data-toggle="tooltip"
+                                                        data-original-title="Delete"
+                                                        onclick="return confirm('Anda yakin ingin menghapus buku ini?')">
+                                                    <i
+                                                            class="fa fa-trash font-14"></i></button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                @endif
                             </tr>
                         @endforeach
                         </tbody>
                     </table>
                 </div>
-            
+                {{--                <div class="text-center">
+                                    <ul style="display:inline-block;">
+                                        {{$books->links()}}
+                                    </ul>
+                                </div>--}}
             </div>
         </div>
     </div>

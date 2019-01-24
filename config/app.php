@@ -12,8 +12,8 @@ return [
     | any other location as required by the application or its packages.
     |
     */
-
-    'name' => env('APP_NAME', 'Laravel'),
+    
+    'name' => env('APP_NAME', 'MyPerpus'),
 
     /*
     |--------------------------------------------------------------------------
@@ -25,7 +25,7 @@ return [
     | services your application utilizes. Set this in your ".env" file.
     |
     */
-
+    
     'env' => env('APP_ENV', 'production'),
 
     /*
@@ -38,7 +38,7 @@ return [
     | application. If disabled, a simple generic error page is shown.
     |
     */
-
+    
     'debug' => env('APP_DEBUG', false),
 
     /*
@@ -51,7 +51,7 @@ return [
     | your application so that it is used when running Artisan tasks.
     |
     */
-
+    
     'url' => env('APP_URL', 'http://localhost'),
 
     /*
@@ -64,7 +64,7 @@ return [
     | ahead and set this to a sensible default for you out of the box.
     |
     */
-
+    
     'timezone' => 'Asia/Jakarta',
 
     /*
@@ -77,7 +77,7 @@ return [
     | to any of the locales which will be supported by the application.
     |
     */
-
+    
     'locale' => 'id',
 
     /*
@@ -90,7 +90,7 @@ return [
     | the language folders that are provided through your application.
     |
     */
-
+    
     'fallback_locale' => 'id',
 
     /*
@@ -103,9 +103,9 @@ return [
     | will not be safe. Please do this before deploying an application!
     |
     */
-
+    
     'key' => env('APP_KEY'),
-
+    
     'cipher' => 'AES-256-CBC',
 
     /*
@@ -118,7 +118,7 @@ return [
     | this array to grant expanded functionality to your applications.
     |
     */
-
+    
     'providers' => [
 
         /*
@@ -176,7 +176,7 @@ return [
     | the aliases are "lazy" loaded so they don't hinder performance.
     |
     */
-
+    
     'aliases' => [
 
         'App' => Illuminate\Support\Facades\App::class,

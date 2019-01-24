@@ -1,6 +1,6 @@
 @extends('layouts.layout')
 @section('styles')
-    <link href="{{asset('css/datatables.bootstrap.css')}}" rel="stylesheet"/>
+    {{--<link href="{{asset('css/datatables.bootstrap.css')}}" rel="stylesheet"/>--}}
 @endsection
 
 @section('content')
@@ -14,7 +14,7 @@
         
         <div style="margin-bottom: 20px;">
             <a href="{{ route('user.create') }}" class="btn btn-primary btn-rounded btn-fw"><i class="fa fa-plus"></i>
-                Tambah User</a>
+                Add User</a>
         </div>
         
         @if (Session::has('message'))
@@ -24,20 +24,20 @@
         <div class="card ibox">
             <div class="ibox-head">
                 <div class="ibox-title text-info"><i class="fa fa-user"></i> Data Users</div>
-                <div class="pull-rightt">
-                    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><i
-                                class="fa fa-download"></i> Export As <i class="fa fa-angle-down"></i></button>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a class="dropdown-item" href="{{ url('/downloadPDF') }}"><i
-                                        class="fa fa-file-pdf-o"></i> PDF</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="{{ url('/downloadExcel') }}"><i
-                                        class="fa fa-file-excel-o"></i> Excel</a>
-                        </li>
-                    </ul>
-                </div>
+                {{--                <div class="pull-rightt">
+                                    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><i
+                                                class="fa fa-download"></i> Export As <i class="fa fa-angle-down"></i></button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item" href="{{ url('/downloadPDF') }}"><i
+                                                        class="fa fa-file-pdf-o"></i> PDF</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="{{ url('/downloadExcel') }}"><i
+                                                        class="fa fa-file-excel-o"></i> Excel</a>
+                                        </li>
+                                    </ul>
+                                </div>--}}
             </div>
             
             <div class="ibox-body">
@@ -177,13 +177,12 @@
 @endsection
 
 @section('js')
-    <script src="{{asset('js/jquery.dataTables.min.js')}}" type="text/javascript"></script>
-    {{--    <script type="text/javascript">
-            $(document).ready(function() {
-                $('#table').DataTable({
-                    "iDisplayLength": 50
-                });
-    
-            } );
-        </script>--}}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#table').DataTable({
+                "iDisplayLength": 10
+            });
+
+        });
+    </script>
 @stop

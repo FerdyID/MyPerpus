@@ -6,6 +6,7 @@ use App\Domain\Repositories\BookRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
+use SWAL;
 
 class BookController extends Controller
 {
@@ -17,6 +18,8 @@ class BookController extends Controller
      */
     public function __construct(BookRepository $book)
     {
+        $this->middleware('auth');
+        $this->middleware('authAdmin', ['except' => ['index', 'show']]);
         $this->book = $book;
     }
     
@@ -28,8 +31,8 @@ class BookController extends Controller
      */
     public function index(Request $request)
     {
-        $books = $this->book->paginate($limit=3, 'judul', $request->input('search'));
-    
+        $books = $this->book->paginate($limit = 10, 'judul', $request->input('search'));
+        
         $i     = ($books->currentPage() - 1) * $limit;
         return view('books.index', compact('books', 'i'));
     }
@@ -69,8 +72,7 @@ class BookController extends Controller
         }
         
         $this->book->created($cover, $request->all());
-        Session::flash('message', 'Berhasil ditambahkan!');
-        Session::flash('message_type', 'success');
+        SWAL::message('Berhasil.', 'Data telah ditambahkan!', 'success');
         return redirect()->to('book');
     }
 
@@ -82,7 +84,8 @@ class BookController extends Controller
      */
     public function show($id)
     {
-        return view('books.show');
+        $book = $this->book->getById($id);
+        return view('books.show', compact('book'));
     }
 
     /**
@@ -93,7 +96,8 @@ class BookController extends Controller
      */
     public function edit($id)
     {
-        return view('books.edit');
+        $book = $this->book->getById($id);
+        return view('books.edit', compact('book'));
     }
 
     /**
@@ -105,7 +109,23 @@ class BookController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $book = $this->book->getById($id);
+        if ($request->file('cover')) {
+            \File::delete(public_path('images/book/' . $book->cover));
+            $file     = $request->file('cover');
+            $dt       = Carbon::now();
+            $judul    = preg_replace('/\s+/', '-', $request->input('judul'));
+            $type     = $file->getClientOriginalExtension();
+            $fileName = $judul . '-' . $dt->format('Y-m-d-H-i-s') . '.' . $type;
+            $request->file('cover')->move("images/book", $fileName);
+            $cover = $fileName;
+        } else {
+            $cover = $book->cover;
+        }
+    
+        $this->book->updated($id, $cover, $request->all());
+        SWAL::message('Berhasil.', 'Data telah diubah!', 'success');
+        return redirect()->route('book.index');
     }
 
     /**
@@ -116,6 +136,10 @@ class BookController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $book = $this->book->getById($id);
+        $this->book->delete($id);
+        \File::delete(public_path('images/book/' . $book->cover));
+        SWAL::message('Berhasil.', 'Berhasil dihapus!', 'success');
+        return redirect()->to('book');
     }
 }

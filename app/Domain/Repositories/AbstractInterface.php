@@ -1,4 +1,5 @@
 <?php
+//fungsi yg dipanggil
 
 namespace App\Domain\Repositories;
 

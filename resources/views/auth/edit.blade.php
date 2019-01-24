@@ -72,34 +72,34 @@
                             </div>
                         </div>
                     @endif
-                    
-                    {{--                        @if(Auth::user()->id == $user->id)--}}
-                    <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                        <label for="password" class="col-md-4 control-label">Password</label>
-                        <div class="col-md-6">
-                            <input id="password" type="password" class="form-control input-rounded"
-                                   onkeyup='check();'
-                                   name="password">
-                            @if ($errors->has('password'))
-                                <span class="text-danger">
+    
+                    @if(Auth::user()->id == $user->id)
+                        <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
+                            <label for="password" class="col-md-4 control-label">Password</label>
+                            <div class="col-md-6">
+                                <input id="password" type="password" class="form-control input-rounded"
+                                       onkeyup='check();'
+                                       name="password">
+                                @if ($errors->has('password'))
+                                    <span class="text-danger">
                                         {{ $errors->first('password') }}
                                     </span>
-                            @endif
+                                @endif
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="password-confirm" class="col-md-4 control-label">Confirm Password</label>
-                        <div class="col-md-6">
-                            <input id="confirm_password" type="password" onkeyup="check()"
-                                   class="form-control input-rounded" name="password_confirmation">
-                            <span id='message'></span>
+                        <div class="form-group">
+                            <label for="password-confirm" class="col-md-4 control-label">Confirm Password</label>
+                            <div class="col-md-6">
+                                <input id="confirm_password" type="password" onkeyup="check()"
+                                       class="form-control input-rounded" name="password_confirmation">
+                                <span id='message'></span>
+                            </div>
                         </div>
-                    </div>
-                    {{--@endif--}}
+                    @endif
                     
                     <br>
                     <div class="form-group col-md-6">
-                        <button type="submit" class="btn btn-primary btn-fix" id="submit" disabled>Update</button>
+                        <button type="submit" class="btn btn-primary btn-fix" id="submit">Update</button>
                         {{--<a href="{{url('user')}}" class="btn btn-default btn-fix pull-right">Back</a>--}}
                     </div>
                 </form>
